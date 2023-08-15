@@ -56,11 +56,22 @@ public class TopicToKTableGenerator {
 
     }
 
-    private static void kTableToOutput(KTable<String, Long> favouriteColoursKTable,StreamsBuilder builder) {
-        favouriteColoursKTable.toStream().to(Constants.OUTPUT_TOPIC, Produced.with(Serdes.String(), Serdes.Long()));
-        KStream<String, String> outputTopicStream = builder.stream(Constants.INPUT_TOPIC);
-        outputTopicStream.peek((key,value)-> log.info(String.format("PEEKING OUTPUT-TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
 
+
+    private static void inputToTemp(StreamsBuilder builder) {
+        KStream<String, String> textLines = builder.stream(Constants.INPUT_TOPIC);
+        textLines.peek((key,value)-> log.info(String.format("PEEKING INPUT-TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
+        KStream<String, String> usersAndColours = textLines
+                // 1 - we ensure that a comma is here as we will split on it
+                .filter((key, value) -> value.contains(","))
+                // 2 - we select a key that will be the user id (lowercase for safety)
+                .selectKey((key, value) -> value.split(",")[0].toLowerCase())
+                // 3 - we get the colour from the value (lowercase for safety)
+                .mapValues(value -> value.split(",")[1].toLowerCase())
+                // 4 - we filter undesired colours (could be a data sanitization step
+                .filter((user, colour) -> Arrays.asList("green", "blue", "red").contains(colour));
+
+        usersAndColours.to(Constants.TEMP_TOPIC);
     }
 
     private static KTable<String, Long> tempToKTable(StreamsBuilder builder) {
@@ -80,20 +91,11 @@ public class TopicToKTableGenerator {
         return favouriteColours;
     }
 
-    private static void inputToTemp(StreamsBuilder builder) {
-        KStream<String, String> textLines = builder.stream(Constants.INPUT_TOPIC);
-        textLines.peek((key,value)-> log.info(String.format("PEEKING INPUT-TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
-        KStream<String, String> usersAndColours = textLines
-                // 1 - we ensure that a comma is here as we will split on it
-                .filter((key, value) -> value.contains(","))
-                // 2 - we select a key that will be the user id (lowercase for safety)
-                .selectKey((key, value) -> value.split(",")[0].toLowerCase())
-                // 3 - we get the colour from the value (lowercase for safety)
-                .mapValues(value -> value.split(",")[1].toLowerCase())
-                // 4 - we filter undesired colours (could be a data sanitization step
-                .filter((user, colour) -> Arrays.asList("green", "blue", "red").contains(colour));
+    private static void kTableToOutput(KTable<String, Long> favouriteColoursKTable,StreamsBuilder builder) {
+        favouriteColoursKTable.toStream().to(Constants.OUTPUT_TOPIC, Produced.with(Serdes.String(), Serdes.Long()));
+        KStream<String, String> outputTopicStream = builder.stream(Constants.OUTPUT_TOPIC);
+        outputTopicStream.peek((key,value)-> log.info(String.format("PEEKING OUTPUT-TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
 
-        usersAndColours.to(Constants.TEMP_TOPIC);
     }
 
     public KafkaStreams getStreams() {

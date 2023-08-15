@@ -1,6 +1,8 @@
 package com.example.springktabledemo;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableKafkaStreams
+//@EnableKafkaStreams
+@Slf4j
 public class KafkaStreamsConfig {
 
     @Value("${spring.kafka.streams.application-id}")
@@ -32,15 +35,17 @@ public class KafkaStreamsConfig {
     @Value("${spring.kafka.streams.properties.cache.max.bytes.buffering}")
     private String cacheMaxBytesBuffering;
 
-    @Bean(name = "myKafkaStreamsConfig")
+    @Bean
     public StreamsConfig kStreamsConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, appId);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, defaultKeySerde);
-        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, defaultValueSerde);
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, cacheMaxBytesBuffering);
+        log.info("Config=============="+props);
         return new StreamsConfig(props);
     }
+
 }

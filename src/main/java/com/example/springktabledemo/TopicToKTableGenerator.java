@@ -41,14 +41,14 @@ public class TopicToKTableGenerator {
 
         KafkaStreams streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
         // only do this in dev - not in prod
-        streams.cleanUp();
+//        streams.cleanUp();
         streams.start();
 
         // print the topology
         streams.localThreadsMetadata().forEach(data -> System.out.println(data));
 
         // shutdown hook to correctly close the streams application
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+//        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
     }
 

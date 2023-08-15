@@ -18,11 +18,8 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-//@RequiredArgsConstructor
 public class KTableController {
 
-
-//    private final StreamsConfig kafkaStreamsConfig;
 
     private final TopicToKTableGenerator topicToKTableGenerator;
 

@@ -3,6 +3,7 @@ package com.example.springktabledemo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -48,4 +49,8 @@ public class KafkaStreamsConfig {
         return new StreamsConfig(props);
     }
 
+    @Bean
+    public StreamsBuilder getStreamBuilder(){
+        return new StreamsBuilder();
+    }
 }

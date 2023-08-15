@@ -2,6 +2,7 @@ package com.example.springktabledemo;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -20,16 +21,19 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class TopicToKTableGenerator {
 
     private final StreamsConfig kafkaStreamsConfig;
 
+    private final StreamsBuilder builder;
+
+    private KafkaStreams streams;
+
     @PostConstruct
     public void generateKTable() {
         log.info("======== INSIDE generateKTable METHOD ===========");
-        StreamsBuilder builder = new StreamsBuilder();
         // Step 1: Read from Stream apply some operation and publish to temp topic
         inputToTemp(builder);
 
@@ -39,7 +43,7 @@ public class TopicToKTableGenerator {
         //Step 3: - Publish KTable Result to Output Topic
         kTableToOutput(favouriteColoursKTable);
 
-        KafkaStreams streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
+        streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
         // only do this in dev - not in prod
 //        streams.cleanUp();
         streams.start();
@@ -87,5 +91,9 @@ public class TopicToKTableGenerator {
                 .filter((user, colour) -> Arrays.asList("green", "blue", "red").contains(colour));
 
         usersAndColours.to(Constants.TEMP_TOPIC);
+    }
+
+    public KafkaStreams getStreams() {
+        return streams;
     }
 }

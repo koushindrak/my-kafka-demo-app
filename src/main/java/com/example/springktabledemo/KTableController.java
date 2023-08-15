@@ -18,20 +18,26 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class KTableController {
 
 
-    private final StreamsConfig kafkaStreamsConfig;
+//    private final StreamsConfig kafkaStreamsConfig;
+
+    private final TopicToKTableGenerator topicToKTableGenerator;
+
+    @Autowired
+    public KTableController(TopicToKTableGenerator topicToKTableGenerator) {
+        this.topicToKTableGenerator = topicToKTableGenerator;
+    }
 
     @GetMapping("/ktable/all")
     public Map<String, Long> getAllFromKTable() {
-        StreamsBuilder builder = new StreamsBuilder();
-        KTable<String, String> usersAndColoursTable = builder.table(Constants.OUTPUT_TOPIC);
-        KafkaStreams streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
+//        KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), kafkaStreamsConfig);
+        KafkaStreams streams = topicToKTableGenerator.getStreams();
 
         ReadOnlyKeyValueStore<String, Long> keyValueStore =
-               streams.store(StoreQueryParameters.fromNameAndType("CountsByColours", QueryableStoreTypes.keyValueStore()));
+                streams.store(StoreQueryParameters.fromNameAndType("CountsByColours", QueryableStoreTypes.keyValueStore()));
 
 //        KeyValueStore<String, Long> store = streams.store("CountsByColours", QueryableStoreTypes.keyValueStore());
         Map<String, Long> result = new HashMap<>();

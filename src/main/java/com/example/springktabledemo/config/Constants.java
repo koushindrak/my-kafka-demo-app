@@ -1,4 +1,4 @@
-package com.example.springktabledemo;
+package com.example.springktabledemo.config;
 
 public interface Constants {
     String INPUT_TOPIC = "input-topic";

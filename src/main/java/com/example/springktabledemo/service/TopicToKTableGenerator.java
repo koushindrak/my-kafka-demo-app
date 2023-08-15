@@ -1,7 +1,7 @@
-package com.example.springktabledemo;
+package com.example.springktabledemo.service;
 
+import com.example.springktabledemo.config.Constants;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
@@ -41,7 +41,7 @@ public class TopicToKTableGenerator {
         KTable<String, Long> favouriteColoursKTable = tempToKTable(builder);
 
         //Step 3: - Publish KTable Result to Output Topic
-//        kTableToOutput(favouriteColoursKTable);
+        kTableToOutput(favouriteColoursKTable,builder);
 
         streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
         // only do this in dev - not in prod
@@ -56,8 +56,11 @@ public class TopicToKTableGenerator {
 
     }
 
-    private static void kTableToOutput(KTable<String, Long> favouriteColoursKTable) {
+    private static void kTableToOutput(KTable<String, Long> favouriteColoursKTable,StreamsBuilder builder) {
         favouriteColoursKTable.toStream().to(Constants.OUTPUT_TOPIC, Produced.with(Serdes.String(), Serdes.Long()));
+        KStream<String, String> outputTopicStream = builder.stream(Constants.INPUT_TOPIC);
+        outputTopicStream.peek((key,value)-> log.info(String.format("PEEKING OUTPUT-TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
+
     }
 
     private static KTable<String, Long> tempToKTable(StreamsBuilder builder) {
@@ -79,7 +82,7 @@ public class TopicToKTableGenerator {
 
     private static void inputToTemp(StreamsBuilder builder) {
         KStream<String, String> textLines = builder.stream(Constants.INPUT_TOPIC);
-        textLines.peek((key,value)-> log.info(String.format("==== KEY======>>>%s,    VALUE =======>>>>>>%s",key,value)));
+        textLines.peek((key,value)-> log.info(String.format("PEEKING INPUT-TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
         KStream<String, String> usersAndColours = textLines
                 // 1 - we ensure that a comma is here as we will split on it
                 .filter((key, value) -> value.contains(","))

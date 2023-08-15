@@ -1,12 +1,9 @@
-package com.example.springktabledemo;
+package com.example.springktabledemo.controller;
 
-import lombok.RequiredArgsConstructor;
+import com.example.springktabledemo.service.TopicToKTableGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.*;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.state.KeyValueIterator;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +38,7 @@ public class KTableController {
             while (iterator.hasNext()) {
                 KeyValue<String, Long> entry = iterator.next();
                 result.put(entry.key, entry.value);
-                log.info("--------key----value"+entry.key+"-----"+entry.value);
+                log.info("/ktable/all---"+entry.key+"-----"+entry.value);
             }
         }
         return result;

@@ -41,7 +41,7 @@ public class TopicToKTableGenerator {
         KTable<String, Long> favouriteColoursKTable = tempToKTable(builder);
 
         //Step 3: - Publish KTable Result to Output Topic
-        kTableToOutput(favouriteColoursKTable);
+//        kTableToOutput(favouriteColoursKTable);
 
         streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
         // only do this in dev - not in prod

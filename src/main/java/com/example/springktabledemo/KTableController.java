@@ -33,13 +33,11 @@ public class KTableController {
 
     @GetMapping("/ktable/all")
     public Map<String, Long> getAllFromKTable() {
-//        KafkaStreams streams = new KafkaStreams(streamsBuilder.build(), kafkaStreamsConfig);
         KafkaStreams streams = topicToKTableGenerator.getStreams();
 
         ReadOnlyKeyValueStore<String, Long> keyValueStore =
                 streams.store(StoreQueryParameters.fromNameAndType("CountsByColours", QueryableStoreTypes.keyValueStore()));
 
-//        KeyValueStore<String, Long> store = streams.store("CountsByColours", QueryableStoreTypes.keyValueStore());
         Map<String, Long> result = new HashMap<>();
 
         try (KeyValueIterator<String, Long> iterator = keyValueStore.all()) {

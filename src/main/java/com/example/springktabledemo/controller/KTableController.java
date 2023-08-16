@@ -13,6 +13,7 @@ import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Comparator;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
+@RequestMapping("/ktable/states/")
 public class KTableController {
 
 
@@ -35,7 +37,7 @@ public class KTableController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/ktable/all")
+    @GetMapping("/color")
     public Map<String, Long> getAllFromKTable() {
         KafkaStreams streams = topicToKTableGenerator.getStreams();
 
@@ -48,13 +50,13 @@ public class KTableController {
             while (iterator.hasNext()) {
                 KeyValue<String, Long> entry = iterator.next();
                 result.put(entry.key, entry.value);
-                log.info("/ktable/all---"+entry.key+"-----"+entry.value);
+                log.info("/ktable/state/color---"+entry.key+"-----"+entry.value);
             }
         }
         return result;
     }
 
-    @GetMapping("/ktable/all/temp")
+    @GetMapping("/temp")
     public Map<String, String> getAllFromTempKTable() {
         KafkaStreams streams = topicToKTableGenerator.getStreams();
 
@@ -67,14 +69,14 @@ public class KTableController {
             while (iterator.hasNext()) {
                 KeyValue<String, String> entry = iterator.next();
                 result.put(entry.key, entry.value);
-                log.info("/ktable/all---"+entry.key+"-----"+entry.value);
+                log.info("/ktable/state/temp---"+entry.key+"-----"+entry.value);
             }
         }
         return result;
     }
 
-    @GetMapping("/ktable/user/all/temp")
-    public Map<String, User> getAllUsersFromTempKTable() {
+    @GetMapping("/user")
+    public Map<String, User> getAllUsersFromKTable() {
         KafkaStreams streams = topicToKTableGenerator.getStreams();
 
         ReadOnlyKeyValueStore<String, String> keyValueStore =
@@ -86,7 +88,7 @@ public class KTableController {
             while (iterator.hasNext()) {
                 KeyValue<String, String> entry = iterator.next();
                 result.put(entry.key, objectMapper.readValue(entry.value, User.class));
-                log.info("/ktable/user/all---" + entry.key + "-----" + entry.value);
+                log.info("/ktable/state/user---" + entry.key + "-----" + entry.value);
             }
         } catch (JsonMappingException e) {
             throw new RuntimeException(e);

@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/produce")
+@RequestMapping("/publish")
 @Slf4j
 public class KafkaProducerController {
 
@@ -34,7 +34,7 @@ public class KafkaProducerController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/count/{count}")
+    @GetMapping("/color/{count}")
     @Async
     public void produceMessages(@PathVariable Long count) {
         log.info("=============Producing Messages========");
@@ -50,7 +50,7 @@ public class KafkaProducerController {
         log.info(count+"   ******** MESSAGES Produced SUCCESSFULLY FROM /product/count/api ***********");
     }
 
-    @GetMapping("/user/count")
+    @GetMapping("/user")
     @Async
     public void produceUserMessages(@RequestParam Integer from,@RequestParam Integer to) throws JsonProcessingException {
         log.info("=============Producing Messages========");

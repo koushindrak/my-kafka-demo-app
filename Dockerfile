@@ -25,7 +25,7 @@ RUN wget https://downloads.apache.org/kafka/3.5.1/kafka_2.13-3.5.1.tgz && \
     rm kafka_2.13-3.5.1.tgz
 
 # Copy the built JAR from the build stage into this image
-COPY --from=build /usr/src/app/target/ktable-app-jar-with-dependencies.jar /usr/app/ktable-app.jar
+COPY --from=build /usr/src/app/target/ktable-app.jar /usr/app/ktable-app.jar
 
 
 

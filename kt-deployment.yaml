@@ -1,0 +1,25 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: favourite-colour-app
+  labels:
+    app: favourite-colour-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: favourite-colour-app
+  template:
+    metadata:
+      labels:
+        app: favourite-colour-app
+    spec:
+      containers:
+        - name: favourite-colour-app
+          image: koushindra/favourite-colour-app:latest
+          resources:
+            requests:
+              cpu: 1m
+            limits:
+              cpu: 50m

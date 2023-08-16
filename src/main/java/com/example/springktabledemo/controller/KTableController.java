@@ -76,23 +76,21 @@ public class KTableController {
     }
 
     @GetMapping("/user")
-    public Map<String, User> getAllUsersFromKTable() {
+    public Map<String, String> getAllUsersFromKTable() {
         KafkaStreams streams = topicToKTableGenerator.getStreams();
 
         ReadOnlyKeyValueStore<String, String> keyValueStore =
                 streams.store(StoreQueryParameters.fromNameAndType(Constants.USER_KTABLE_STORE, QueryableStoreTypes.keyValueStore()));
 
-        Map<String, User> result = new HashMap<>();
+        Map<String, String> result = new HashMap<>();
 
         try (KeyValueIterator<String, String> iterator = keyValueStore.all()) {
             while (iterator.hasNext()) {
                 KeyValue<String, String> entry = iterator.next();
-                result.put(entry.key, objectMapper.readValue(entry.value, User.class));
+                result.put(entry.key, objectMapper.readValue(entry.value, User.class).toString());
                 log.info("/ktable/state/user---" + entry.key + "-----" + entry.value);
             }
-        } catch (JsonMappingException e) {
-            throw new RuntimeException(e);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

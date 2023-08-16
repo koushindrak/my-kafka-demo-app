@@ -31,17 +31,21 @@ public class TopicToKTableGenerator {
 
     private KafkaStreams streams;
 
+    private final SimpleUserKTableGenerator simpleUserKTableGenerator;
+
     @PostConstruct
     public void generateKTable() {
         log.info("======== INSIDE generateKTable METHOD ===========");
         // Step 1: Read from Stream apply some operation and publish to temp topic
         inputToTemp(builder);
 
+       simpleUserKTableGenerator.generateUserKTable();
+
         // Step 2: read from Temp, apply aggregations and return KTable
         KTable<String, Long> favouriteColoursKTable = tempToKTable(builder);
 
         //Step 3: - Publish KTable Result to Output Topic
-        kTableToOutput(favouriteColoursKTable,builder);
+//        kTableToOutput(favouriteColoursKTable,builder);
 
         streams = new KafkaStreams(builder.build(), kafkaStreamsConfig);
         // only do this in dev - not in prod
@@ -69,17 +73,19 @@ public class TopicToKTableGenerator {
                 // 3 - we get the colour from the value (lowercase for safety)
                 .mapValues(value -> value.split(",")[1].toLowerCase())
                 // 4 - we filter undesired colours (could be a data sanitization step
-                .filter((user, colour) -> Arrays.asList("green", "blue", "red").contains(colour));
+                .filter((user, colour) -> Arrays.asList("green", "blue", "red").contains(colour))
+                .peek((key,value)-> log.info("After Applying operation on input-topic--"+key+"---"+value));
 
         usersAndColours.to(Constants.TEMP_TOPIC);
     }
 
     private static KTable<String, Long> tempToKTable(StreamsBuilder builder) {
+
         Serde<String> stringSerde = Serdes.String();
         Serde<Long> longSerde = Serdes.Long();
 
         // step 2 - we read that topic as a KTable so that updates are read correctly
-        KTable<String, String> usersAndColoursTable = builder.table(Constants.TEMP_TOPIC);
+        KTable<String, String> usersAndColoursTable = builder.table(Constants.TEMP_TOPIC,getMetTable());
 
         // step 3 - we count the occurences of colours
         KTable<String, Long> favouriteColours = usersAndColoursTable
@@ -100,5 +106,14 @@ public class TopicToKTableGenerator {
 
     public KafkaStreams getStreams() {
         return streams;
+    }
+
+    public static Materialized<String, String, KeyValueStore<Bytes, byte[]>>  getMetTable(){
+        Materialized<String, String, KeyValueStore<Bytes, byte[]>> materializedStore =
+                Materialized.<String, String, KeyValueStore<Bytes, byte[]>>as(Constants.TEMP_KTABLE_STORE)
+                        .withKeySerde(Serdes.String())
+                        .withValueSerde(Serdes.String());
+        return materializedStore;
+
     }
 }

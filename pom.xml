@@ -104,7 +104,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>com.github.simplesteph.udemy.kafka.streams.FavouriteColourApp</mainClass>
+                            <mainClass>com.example.springktabledemo.Launcher</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -20,6 +20,6 @@ spec:
           image: koushindra/ktable-app:latest
           resources:
             requests:
-              cpu: 1m
+              cpu: 600m
             limits:
-              cpu: 50m
+              cpu: 1000m

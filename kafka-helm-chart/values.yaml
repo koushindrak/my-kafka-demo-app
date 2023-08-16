@@ -1156,7 +1156,7 @@ broker:
 service:
   ## @param service.type Kubernetes Service type
   ##
-  type: ClusterIP
+  type: LoadBalancer
   ## @param service.ports.client Kafka svc port for client connections
   ## @param service.ports.controller Kafka svc port for controller connections. It is used if "kraft.enabled: true"
   ## @param service.ports.interbroker Kafka svc port for inter-broker connections

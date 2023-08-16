@@ -2,22 +2,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: favourite-colour-app
+  name: ktable-app
   labels:
-    app: favourite-colour-app
+    app: ktable-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: favourite-colour-app
+      app: ktable-app
   template:
     metadata:
       labels:
-        app: favourite-colour-app
+        app: ktable-app
     spec:
       containers:
-        - name: favourite-colour-app
-          image: koushindra/favourite-colour-app:latest
+        - name: ktable-app
+          image: koushindra/ktable-app:latest
           resources:
             requests:
               cpu: 1m

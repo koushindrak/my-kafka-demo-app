@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: favourite-colour-app-hpa
+  name: ktable-app
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: favourite-colour-app
+    name: ktable-app
   minReplicas: 1
   maxReplicas: 8
   metrics:

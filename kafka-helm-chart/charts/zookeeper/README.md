@@ -233,11 +233,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | `persistence.existingClaim`            | Name of an existing PVC to use (only when deploying a single replica)          | `""`                |
 | `persistence.storageClass`             | PVC Storage Class for ZooKeeper data volume                                    | `""`                |
 | `persistence.accessModes`              | PVC Access modes                                                               | `["ReadWriteOnce"]` |
-| `persistence.size`                     | PVC Storage Request for ZooKeeper data volume                                  | `1Gi`               |
+| `persistence.size`                     | PVC Storage Request for ZooKeeper data volume                                  | `8Gi`               |
 | `persistence.annotations`              | Annotations for the PVC                                                        | `{}`                |
 | `persistence.labels`                   | Labels for the PVC                                                             | `{}`                |
 | `persistence.selector`                 | Selector to match an existing Persistent Volume for ZooKeeper's data PVC       | `{}`                |
-| `persistence.dataLogDir.size`          | PVC Storage Request for ZooKeeper's dedicated data log directory               | `1Gi`               |
+| `persistence.dataLogDir.size`          | PVC Storage Request for ZooKeeper's dedicated data log directory               | `8Gi`               |
 | `persistence.dataLogDir.existingClaim` | Provide an existing `PersistentVolumeClaim` for ZooKeeper's data log directory | `""`                |
 | `persistence.dataLogDir.selector`      | Selector to match an existing Persistent Volume for ZooKeeper's data log PVC   | `{}`                |
 

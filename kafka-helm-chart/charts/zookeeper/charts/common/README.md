@@ -103,7 +103,7 @@ accessMode:
 size:
   type: string
   description: Size the Persistent Volume Storage.
-  example: 1Gi
+  example: 8Gi
 
 path:
   type: string
@@ -114,7 +114,7 @@ path:
 # enabled: true
 # storageClass: "-"
 # accessMode: ReadWriteOnce
-# size: 1Gi
+# size: 8Gi
 # path: /bitnami
 ```
 

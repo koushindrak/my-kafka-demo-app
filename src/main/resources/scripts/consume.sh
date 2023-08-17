@@ -20,11 +20,12 @@ bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
     --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 
 
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 \
-    --topic user-input-topic \
+bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 \
+    --topic user-input-topic-1 \
     --from-beginning \
     --formatter kafka.tools.DefaultMessageFormatter \
     --property print.key=true \
     --property print.value=true \
     --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
     --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+

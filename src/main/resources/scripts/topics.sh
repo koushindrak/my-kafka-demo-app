@@ -34,5 +34,5 @@ bin/kafka-configs.sh --bootstrap-server localhost:9092 --entity-type topics \
 --alter \
 --add-config "cleanup.policy=compact,segment.bytes=1048576,min.cleanable.dirty.ratio=0.01,segment.ms=10000"
 
-bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 \
---partitions 1 --topic user-input-topic --config cleanup.policy=compact
+bin/kafka-topics.sh --create --bootstrap-server kafka:9092 --replication-factor 1 \
+--partitions 1 --topic user-input-topic-2 --config cleanup.policy=compact

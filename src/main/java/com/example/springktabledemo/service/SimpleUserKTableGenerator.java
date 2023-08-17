@@ -28,9 +28,7 @@ public class SimpleUserKTableGenerator {
     }
 
     public void generateUserKTable(){
-//        KStream<String, String> userKStream = builder.stream(Constants.USER_INPUT_TOPIC);
-//        userKStream.peek((key,value)-> log.info(String.format("PEEKING USER_INPUT_TOPIC ==== KEY====>>>%s,    VALUE =====>>>>>>%s",key,value)));
-        builder.table(Constants.USER_INPUT_TOPIC,getUserMetTable());
+      builder.table(Constants.USER_INPUT_TOPIC,getUserMetTable());
     }
 
     public static Materialized<String, String, KeyValueStore<Bytes, byte[]>> getUserMetTable(){
